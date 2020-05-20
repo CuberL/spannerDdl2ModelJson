@@ -22,5 +22,5 @@ type ObjectField struct {
 
 type ArrayField struct {
 	BaseField
-	Items []Field `json:"items"`
+	Items Field `json:"items"`
 }

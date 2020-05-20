@@ -60,11 +60,27 @@ func genFieldsFromStatement(createTableStatement types.CreateTableStatement) (Fi
 	}
 
 	for _, column := range createTableStatement.Columns {
-		ret.Properties[column.Name] = &BaseField{
-			Type:        getColumnType(column),
-			Format:      getColumnFormat(column),
-			Required:    column.NotNull,
-			Description: column.Comment,
+		if column.Type.IsArray {
+			ret.Properties[column.Name] = &ArrayField{
+				BaseField: BaseField{
+					Required: column.NotNull,
+					Format:   "",
+					Type:     "array",
+				},
+				Items: &BaseField{
+					Type:        getColumnType(column),
+					Format:      getColumnFormat(column),
+					Required:    column.NotNull,
+					Description: column.Comment,
+				},
+			}
+		} else {
+			ret.Properties[column.Name] = &BaseField{
+				Type:        getColumnType(column),
+				Format:      getColumnFormat(column),
+				Required:    column.NotNull,
+				Description: column.Comment,
+			}
 		}
 	}
 
