@@ -34,9 +34,9 @@ func getColumnFormat(column types.Column) string {
 	case types.Bool:
 		return "bool"
 	case types.Int64:
-		return "number"
+		return "int64"
 	case types.Float64:
-		return "number"
+		return "float64"
 	case types.String:
 		return "string"
 	case types.Timestamp:
@@ -49,8 +49,16 @@ func getColumnFormat(column types.Column) string {
 	return ""
 }
 
-func genFieldsFromStatement(createTableStatement types.CreateTableStatement) (Field, error) {
-	ret := &ObjectField{
+func getKeyOrder(keyOrder types.KeyOrder) string {
+	if keyOrder == types.Asc {
+		return "asc"
+	} else {
+		return "desc"
+	}
+}
+
+func genFieldsFromStatement(createTableStatement types.CreateTableStatement) (CreateDDL, error) {
+	retField := &ObjectField{
 		BaseField: BaseField{
 			Required: true,
 			Type:     "object",
@@ -61,7 +69,7 @@ func genFieldsFromStatement(createTableStatement types.CreateTableStatement) (Fi
 
 	for _, column := range createTableStatement.Columns {
 		if column.Type.IsArray {
-			ret.Properties[column.Name] = &ArrayField{
+			retField.Properties[column.Name] = &ArrayField{
 				BaseField: BaseField{
 					Required: column.NotNull,
 					Format:   "",
@@ -75,7 +83,7 @@ func genFieldsFromStatement(createTableStatement types.CreateTableStatement) (Fi
 				},
 			}
 		} else {
-			ret.Properties[column.Name] = &BaseField{
+			retField.Properties[column.Name] = &BaseField{
 				Type:        getColumnType(column),
 				Format:      getColumnFormat(column),
 				Required:    column.NotNull,
@@ -83,6 +91,16 @@ func genFieldsFromStatement(createTableStatement types.CreateTableStatement) (Fi
 			}
 		}
 	}
+
+	ret := CreateDDL{}
+	for _, key := range createTableStatement.PrimaryKeys {
+		ret.PrimaryKeys = append(ret.PrimaryKeys, Key{
+			KeyOrder: getKeyOrder(key.KeyOrder),
+			Name:     key.Name,
+		})
+	}
+	ret.Columns = retField
+	ret.TableName = createTableStatement.TableName
 
 	return ret, nil
 }

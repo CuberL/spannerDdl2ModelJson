@@ -23,28 +23,37 @@ output will be like this:
 
 ``` json
 {
-  "type": "object",
-  "format": "students",
-  "required": true,
-  "description": "",
-  "properties": {
-    "FirstName": {
-      "type": "string",
-      "format": "string",
-      "required": true,
-      "description": "first name of student"
-    },
-    "Id": {
-      "type": "number",
-      "format": "number",
-      "required": true,
-      "description": ""
-    },
-    "LastName": {
-      "type": "string",
-      "format": "string",
-      "required": true,
-      "description": "last name of student"
+  "table_name": "students",
+  "primary_keys": [
+    {
+      "key_order": "asc",
+      "name": "Id"
+    }
+  ],
+  "fields": {
+    "type": "object",
+    "format": "students",
+    "required": true,
+    "description": "",
+    "properties": {
+      "FirstName": {
+        "type": "string",
+        "format": "string",
+        "required": true,
+        "description": "first name of student"
+      },
+      "Id": {
+        "type": "number",
+        "format": "int64",
+        "required": true,
+        "description": ""
+      },
+      "LastName": {
+        "type": "string",
+        "format": "string",
+        "required": true,
+        "description": "last name of student"
+      }
     }
   }
 }

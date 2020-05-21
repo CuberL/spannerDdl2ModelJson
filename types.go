@@ -24,3 +24,14 @@ type ArrayField struct {
 	BaseField
 	Items Field `json:"items"`
 }
+
+type CreateDDL struct {
+	TableName   string `json:"table_name"`
+	PrimaryKeys []Key  `json:"primary_keys"`
+	Columns     Field  `json:"columns"`
+}
+
+type Key struct {
+	KeyOrder string `json:"key_order"`
+	Name     string `json:"name"`
+}
