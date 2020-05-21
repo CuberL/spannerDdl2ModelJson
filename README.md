@@ -30,7 +30,7 @@ output will be like this:
       "name": "Id"
     }
   ],
-  "fields": {
+  "columns": {
     "type": "object",
     "format": "students",
     "required": true,
